@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
 import { UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 
@@ -7,59 +10,62 @@ export default function DashboardLayout({
 }: {
     children: React.ReactNode;
 }) {
+    const [open, setOpen] = useState(false);
+
     return (
-        <div className="flex h-screen">
+        <div className="min-h-screen flex">
+
+            {/* Mobile Header */}
+            <div className="md:hidden fixed top-0 left-0 right-0 h-14 bg-white border-b flex items-center justify-between px-4 z-50">
+                <Button variant="ghost" onClick={() => setOpen(!open)}>
+                    ☰
+                </Button>
+                <span className="font-bold">Task Manager</span>
+                <UserButton afterSignOutUrl="/sign-in" />
+            </div>
 
             {/* Sidebar */}
-            <aside className="w-64 border-r bg-background p-5 flex flex-col">
+            <aside
+                className={`
+          fixed md:static top-14 md:top-0
+          h-[calc(100vh-56px)] md:h-screen
+          w-64 bg-white border-r
+          transform transition-transform
+          ${open ? "translate-x-0" : "-translate-x-full"}
+          md:translate-x-0
+          z-40
+        `}
+            >
+                <div className="p-5 flex flex-col h-full">
 
-                {/* Logo */}
-                <h2 className="text-2xl font-bold mb-8">
-                    Task Manager
-                </h2>
+                    <h2 className="text-xl font-bold mb-6 hidden md:block">
+                        Task Manager
+                    </h2>
 
-                {/* Navigation */}
-                <nav className="flex flex-col gap-2 flex-1">
+                    <nav className="flex flex-col gap-2 flex-1">
+                        <Link href="/dashboard" className="hover:bg-muted px-3 py-2 rounded">
+                            Dashboard
+                        </Link>
 
-                    <Button variant="ghost" asChild>
-                        <Link href="/dashboard">Dashboard</Link>
-                    </Button>
+                        <Link href="/dashboard/my-tasks" className="hover:bg-muted px-3 py-2 rounded">
+                            My Tasks
+                        </Link>
 
-                    <Button variant="ghost" asChild>
-                        <Link href="/dashboard/tasks">Tasks</Link>
-                    </Button>
+                        <Link href="/dashboard/all-tasks" className="hover:bg-muted px-3 py-2 rounded">
+                            All Tasks
+                        </Link>
+                    </nav>
 
-                </nav>
-
-                {/* Profile */}
-                <div className="border-t pt-4">
-                    <div className="flex items-center justify-between w-full">
-
-                        <UserButton
-                            afterSignOutUrl="/sign-in"
-                            appearance={{
-                                elements: {
-                                    userButtonAvatarBox: "w-10 h-10",
-                                },
-                            }}
-                        />
-
-                        <span className="text-sm font-medium">
-                            Profile
-                        </span>
-
+                    <div className="hidden md:block border-t pt-4">
+                        <UserButton afterSignOutUrl="/sign-in" />
                     </div>
-
-
                 </div>
-
             </aside>
 
-            {/* Main Content */}
-            <main className="flex-1 bg-muted/40 p-6">
+            {/* Main */}
+            <main className="flex-1 p-4 md:p-6 mt-14 md:mt-0 bg-muted/40">
                 {children}
             </main>
-
         </div>
     );
 }

@@ -64,7 +64,7 @@ export default function DashboardPage() {
                     <CardTitle>Recent Tasks</CardTitle>
 
                     <Button asChild size="sm">
-                        <Link href="/dashboard/tasks">
+                        <Link href="/dashboard/all-tasks">
                             View All
                         </Link>
                     </Button>
